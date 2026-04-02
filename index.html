@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Запросы для Website 2 APK -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Mekogramm Ultra</title>
+    <title>Melegramm</title>
     <style>
         :root {
             --bg: #0e1621; --side: #17212b; --item-hover: #232e3c;
@@ -15,41 +13,44 @@
         body { margin: 0; font-family: -apple-system, system-ui, Roboto, sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
         
         /* Sidebar */
-        #sidebar { width: 100%; max-width: 350px; background: var(--side); display: flex; flex-direction: column; border-right: 1px solid #000; z-index: 10; transition: 0.3s; }
-        .side-header { padding: 15px; display: flex; align-items: center; gap: 10px; font-weight: bold; }
+        #sidebar { width: 100%; max-width: 350px; background: var(--side); display: flex; flex-direction: column; border-right: 1px solid #000; z-index: 10; transition: transform 0.3s ease; }
+        .side-header { padding: 15px; display: flex; align-items: center; gap: 15px; font-weight: bold; font-size: 18px; }
         .search-area { padding: 10px 15px; }
-        .search-area input { width: 100%; padding: 10px; border-radius: 10px; border: none; background: var(--search-bg); color: white; outline: none; }
+        .search-area input { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--search-bg); color: white; outline: none; box-sizing: border-box;}
         
         .chat-list { overflow-y: auto; flex-grow: 1; }
         .chat-item { display: flex; align-items: center; padding: 12px 15px; gap: 12px; cursor: pointer; transition: 0.2s; }
         .chat-item:hover { background: var(--item-hover); }
-        .chat-item img { width: 50px; height: 50px; border-radius: 50%; background: var(--accent); }
+        .chat-item img { width: 50px; height: 50px; border-radius: 50%; background: var(--accent); object-fit: cover; }
         .chat-item .info { flex-grow: 1; overflow: hidden; border-bottom: 0.5px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .chat-item .name { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+        .chat-item .sub { font-size: 13px; color: #7f91a4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* Chat Window */
         #chat-main { flex-grow: 1; display: flex; flex-direction: column; background: #070d14 url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); position: relative; }
         .chat-header { background: var(--side); padding: 10px 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); z-index: 5; }
-        .back-btn { display: none; font-size: 24px; color: var(--accent); cursor: pointer; }
+        .back-btn { display: none; font-size: 24px; color: var(--accent); cursor: pointer; padding-right: 5px; }
 
-        #messages-cont { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
-        .bubble { max-width: 75%; padding: 8px 12px; border-radius: 15px; font-size: 15px; position: relative; }
-        .bubble.mine { align-self: flex-end; background: var(--msg-out); border-bottom-right-radius: 2px; }
-        .bubble.theirs { align-self: flex-start; background: var(--msg-in); border-bottom-left-radius: 2px; }
-        .bubble img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
-        .bubble audio { height: 30px; width: 200px; margin-top: 5px; }
+        #messages-cont { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .bubble { max-width: 75%; padding: 10px 14px; border-radius: 15px; font-size: 15px; position: relative; line-height: 1.4; word-wrap: break-word; }
+        .bubble.mine { align-self: flex-end; background: var(--msg-out); border-bottom-right-radius: 4px; }
+        .bubble.theirs { align-self: flex-start; background: var(--msg-in); border-bottom-left-radius: 4px; }
+        .bubble img { max-width: 100%; border-radius: 10px; margin-top: 5px; display: block; }
+        .bubble audio { height: 40px; max-width: 200px; margin-top: 5px; outline: none; }
 
         /* Input Panel */
-        .input-panel { padding: 10px 15px; background: var(--side); display: flex; align-items: center; gap: 12px; }
-        .input-panel input { flex-grow: 1; padding: 12px; border-radius: 22px; border: none; background: var(--search-bg); color: white; outline: none; }
-        .action-btn { background: none; border: none; color: var(--accent); font-size: 24px; cursor: pointer; }
+        .input-panel { padding: 10px 15px; background: var(--side); display: flex; align-items: center; gap: 10px; }
+        .input-panel input { flex-grow: 1; padding: 12px 15px; border-radius: 22px; border: none; background: var(--search-bg); color: white; outline: none; }
+        .action-btn { background: none; border: none; color: var(--accent); font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; }
 
         /* Settings */
-        #settings-page { position: fixed; inset: 0; background: var(--bg); z-index: 100; display: none; padding: 20px; flex-direction: column; align-items: center; }
-        .set-card { background: var(--side); padding: 20px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; }
+        #settings-page { position: fixed; inset: 0; background: var(--bg); z-index: 100; display: none; padding: 20px; flex-direction: column; align-items: center; justify-content: center; }
+        .set-card { background: var(--side); padding: 25px; border-radius: 20px; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
+        /* Mobile Adapt */
         @media (max-width: 768px) {
             #sidebar { position: fixed; inset: 0; max-width: none; }
-            #chat-main { position: fixed; inset: 0; transform: translateX(100%); transition: 0.3s; z-index: 20; }
+            #chat-main { position: fixed; inset: 0; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 20; }
             body.chat-open #chat-main { transform: translateX(0); }
             .back-btn { display: block; }
         }
@@ -60,45 +61,53 @@
 <body>
 
 <div id="auth-overlay" class="modal">
-    <div style="background: var(--side); padding: 30px; border-radius: 20px; text-align: center; width: 280px;">
-        <h2 style="color:var(--accent)">Mekogramm</h2>
-        <input type="text" id="auth-log" placeholder="Логин" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:none; background:var(--search-bg); color:white;">
-        <input type="password" id="auth-pass" placeholder="Пароль" style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; border:none; background:var(--search-bg); color:white;">
-        <button onclick="handleAuth('login')" style="width:100%; padding:12px; border-radius:8px; border:none; background:var(--accent); color:white; font-weight:bold;">ВОЙТИ</button>
-        <p onclick="handleAuth('reg')" style="color:var(--accent); font-size:13px; margin-top:15px; cursor:pointer;">Создать аккаунт</p>
+    <div style="background: var(--side); padding: 30px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px;">
+        <h2 style="color:var(--accent); margin-top: 0;">Melegramm</h2>
+        <input type="text" id="auth-log" placeholder="Придумайте логин" style="width:100%; padding:12px; margin-bottom:12px; border-radius:10px; border:none; background:var(--search-bg); color:white; box-sizing: border-box;">
+        <input type="password" id="auth-pass" placeholder="Пароль" style="width:100%; padding:12px; margin-bottom:20px; border-radius:10px; border:none; background:var(--search-bg); color:white; box-sizing: border-box;">
+        <button onclick="handleAuth('login')" style="width:100%; padding:14px; border-radius:10px; border:none; background:var(--accent); color:white; font-weight:bold; font-size: 16px; cursor: pointer;">ВОЙТИ</button>
+        <p onclick="handleAuth('reg')" style="color:var(--accent); font-size:14px; margin-top:20px; cursor:pointer;">Новый аккаунт? Создать</p>
     </div>
 </div>
 
 <div id="settings-page">
     <div class="set-card">
-        <button onclick="closeSettings()" style="float:left; color:var(--accent); background:none; border:none;">←</button>
-        <h3>Настройки</h3>
-        <img id="set-ava" src="" style="width:80px; height:80px; border-radius:50%; margin:10px;">
-        <p id="set-name" style="font-weight:bold;"></p>
-        <button onclick="logout()" style="color:#ff4444; background:none; border:none; margin-top:20px;">Выйти из аккаунта</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <button onclick="closeSettings()" style="color:var(--accent); background:none; border:none; font-size: 20px; cursor: pointer;">← Назад</button>
+            <h3 style="margin: 0;">Профиль</h3>
+            <div style="width: 20px;"></div>
+        </div>
+        <img id="set-ava" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:100px; height:100px; border-radius:50%; margin-bottom: 10px; object-fit: cover;">
+        <h2 id="set-name" style="margin: 0 0 20px 0;">Загрузка...</h2>
+        <button onclick="logout()" style="width: 100%; padding: 12px; border-radius: 10px; color:#ff4444; background:rgba(255, 68, 68, 0.1); border:1px solid #ff4444; font-weight: bold; cursor: pointer;">Выйти из аккаунта</button>
     </div>
 </div>
 
 <div id="sidebar">
     <div class="side-header">
-        <span onclick="openSettings()" style="cursor:pointer;">☰</span>
-        <span>Mekogramm</span>
+        <span onclick="openSettings()" style="cursor:pointer; font-size: 24px;">☰</span>
+        <span>Melegramm</span>
     </div>
-    <div class="search-area"><input type="text" placeholder="Поиск..." oninput="filterUsers(this.value)"></div>
-    <div class="chat-list" id="list-cont"></div>
+    <div class="search-area">
+        <input type="text" placeholder="Поиск контактов..." oninput="filterUsers(this.value)">
+    </div>
+    <div class="chat-list" id="list-cont">
+        </div>
 </div>
 
 <div id="chat-main">
     <div class="chat-header">
         <span class="back-btn" onclick="closeChat()">←</span>
-        <img id="h-ava" src="" style="width:40px; height:40px; border-radius:50%;">
+        <img id="h-ava" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:42px; height:42px; border-radius:50%; object-fit: cover;">
         <div style="flex-grow:1;">
-            <div id="h-name" style="font-weight:bold;">Выберите чат</div>
-            <div style="font-size:12px; color:var(--accent);">online</div>
+            <div id="h-name" style="font-weight:bold; font-size: 16px;">Выберите чат</div>
+            <div style="font-size:13px; color:var(--accent);">онлайн</div>
         </div>
-        <span style="font-size:20px; cursor:pointer;" onclick="alert('Вызов...')">📞</span>
+        <span style="font-size:22px; cursor:pointer;" onclick="alert('Функция звонков в разработке!')">📞</span>
     </div>
+    
     <div id="messages-cont"></div>
+    
     <div class="input-panel">
         <button class="action-btn" onclick="document.getElementById('f-up').click()">📎</button>
         <input type="file" id="f-up" class="hidden" accept="image/*">
@@ -126,51 +135,102 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const IMGBB_KEY = "2db2f272dc9f0b69bd8874f377be5439";
-    let me = null, activeChat = null, allUsers = [], recorder, audioChunks = [];
+    
+    let me = null;
+    let activeChat = null;
+    let allUsers = []; 
+    let recorder, audioChunks = [];
 
+    // --- 1. АВТОРИЗАЦИЯ И РЕГИСТРАЦИЯ ---
     window.handleAuth = async (m) => {
-        const l = document.getElementById('auth-log').value.trim();
+        const l = document.getElementById('auth-log').value.trim().toLowerCase();
         const p = document.getElementById('auth-pass').value;
+        if(l.length < 3 || p.length < 6) return alert("Логин от 3 букв, пароль от 6 символов.");
+
         try {
             if(m === 'reg') {
                 const r = await createUserWithEmailAndPassword(auth, `${l}@meko.app`, p);
-                await setDoc(doc(db, "users", r.user.uid), { username: l, uid: r.user.uid, ava: `https://ui-avatars.com/api/?name=${l}&background=random` });
-            } else await signInWithEmailAndPassword(auth, `${l}@meko.app`, p);
-        } catch(e) { alert(e.message); }
+                // ВАЖНО: Сразу создаем запись в базе
+                await setDoc(doc(db, "users", r.user.uid), { 
+                    username: l, 
+                    uid: r.user.uid, 
+                    ava: `https://ui-avatars.com/api/?name=${l}&background=random&color=fff` 
+                });
+            } else {
+                await signInWithEmailAndPassword(auth, `${l}@meko.app`, p);
+            }
+        } catch(e) { 
+            alert("Ошибка входа: " + (e.code === 'auth/email-already-in-use' ? "Такой логин уже занят!" : e.message)); 
+        }
     };
 
+    // --- 2. ИСПРАВЛЕННЫЙ БАГ (RACE CONDITION FIX) ---
     onAuthStateChanged(auth, async (u) => {
         if(u) {
-            const d = await getDoc(doc(db, "users", u.uid));
-            me = d.data();
-            document.getElementById('auth-overlay').classList.add('hidden');
-            document.getElementById('set-ava').src = me.ava;
-            document.getElementById('set-name').innerText = me.username;
-            listenUsers();
-        } else document.getElementById('auth-overlay').classList.remove('hidden');
+            try {
+                // Пытаемся получить данные 5 раз (если база тормозит при регистрации)
+                let d = await getDoc(doc(db, "users", u.uid));
+                let retries = 0;
+                while(!d.exists() && retries < 5) {
+                    await new Promise(res => setTimeout(res, 500)); // Ждем полсекунды
+                    d = await getDoc(doc(db, "users", u.uid));
+                    retries++;
+                }
+
+                if (d.exists()) {
+                    me = d.data();
+                    document.getElementById('auth-overlay').classList.add('hidden');
+                    document.getElementById('set-ava').src = me.ava;
+                    document.getElementById('set-name').innerText = me.username;
+                    listenUsers(); // Запускаем загрузку контактов только когда уверены, что профиль готов
+                } else {
+                    alert("Произошла ошибка при загрузке профиля. Перезайдите.");
+                    signOut(auth);
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        } else {
+            document.getElementById('auth-overlay').classList.remove('hidden');
+        }
     });
 
-    // Живой список пользователей
+    // --- 3. ПОИСК И КОНТАКТЫ ---
     function listenUsers() {
         onSnapshot(collection(db, "users"), (snap) => {
             allUsers = [];
             snap.forEach(d => allUsers.push(d.data()));
             renderUsers(allUsers);
-        });
+        }, (err) => console.error("Ошибка загрузки контактов:", err));
     }
+
+    window.filterUsers = (val) => {
+        const filtered = allUsers.filter(u => u.username.toLowerCase().includes(val.toLowerCase()));
+        renderUsers(filtered);
+    };
 
     function renderUsers(list) {
         const c = document.getElementById('list-cont');
-        c.innerHTML = `<div class="chat-item" onclick="openChat('saved_${me.uid}','Избранное','https://cdn-icons-png.flaticon.com/512/566/566412.png')">
-            <img src="https://cdn-icons-png.flaticon.com/512/566/566412.png"><div class="info"><b>Избранное</b></div></div>`;
+        // Избранное
+        c.innerHTML = `
+            <div class="chat-item" onclick="openChat('saved_${me.uid}','Избранное','https://cdn-icons-png.flaticon.com/512/566/566412.png')">
+                <img src="https://cdn-icons-png.flaticon.com/512/566/566412.png">
+                <div class="info"><div class="name">Избранное</div><div class="sub">Ваши заметки</div></div>
+            </div>`;
+        
+        // Остальные пользователи
         list.forEach(u => {
             if(u.uid === me.uid) return;
             const rid = me.uid < u.uid ? `${me.uid}_${u.uid}` : `${u.uid}_${me.uid}`;
-            c.innerHTML += `<div class="chat-item" onclick="openChat('${rid}','${u.username}','${u.ava}')">
-                <img src="${u.ava}"><div class="info"><b>${u.username}</b><br><small>Нажмите, чтобы написать</small></div></div>`;
+            c.innerHTML += `
+                <div class="chat-item" onclick="openChat('${rid}','${u.username}','${u.ava}')">
+                    <img src="${u.ava}">
+                    <div class="info"><div class="name">${u.username}</div><div class="sub">Нажмите, чтобы написать</div></div>
+                </div>`;
         });
     }
 
+    // --- 4. ОКНО ЧАТА ---
     window.openChat = (id, name, ava) => {
         activeChat = id;
         document.getElementById('h-name').innerText = name;
@@ -179,15 +239,23 @@
         listenMsgs();
     };
 
-    window.closeChat = () => document.body.classList.remove('chat-open');
+    window.closeChat = () => {
+        document.body.classList.remove('chat-open');
+        activeChat = null;
+    };
+    
     window.openSettings = () => document.getElementById('settings-page').style.display = 'flex';
     window.closeSettings = () => document.getElementById('settings-page').style.display = 'none';
     window.logout = () => signOut(auth).then(() => location.reload());
 
+    // --- 5. СООБЩЕНИЯ И МЕДИА ---
     let unsubMsgs;
     function listenMsgs() {
         if(unsubMsgs) unsubMsgs();
-        unsubMsgs = onSnapshot(query(collection(db, "rooms", activeChat, "msgs"), orderBy("time", "asc")), (s) => {
+        if(!activeChat) return;
+
+        const q = query(collection(db, "rooms", activeChat, "msgs"), orderBy("time", "asc"));
+        unsubMsgs = onSnapshot(q, (s) => {
             const mC = document.getElementById('messages-cont');
             mC.innerHTML = "";
             s.forEach(d => {
@@ -197,46 +265,65 @@
                 if(m.type === 'voice') content = `<audio controls src="${m.val}"></audio>`;
                 mC.innerHTML += `<div class="bubble ${isMe ? 'mine' : 'theirs'}">${content}</div>`;
             });
-            mC.scrollTop = mC.scrollHeight;
+            // Плавная прокрутка вниз
+            setTimeout(() => mC.scrollTo({ top: mC.scrollHeight, behavior: 'smooth' }), 50);
         });
     }
 
     window.sendMsg = async (type, val = null) => {
-        const f = document.getElementById('m-field');
-        const v = val || f.value;
-        if(!v && type === 'text') return;
-        await addDoc(collection(db, "rooms", activeChat, "msgs"), { val: v, uid: me.uid, type, time: serverTimestamp() });
-        f.value = "";
+        try {
+            const f = document.getElementById('m-field');
+            const v = val || f.value.trim();
+            if(!v && type === 'text') return;
+            if(!activeChat) return alert("Выберите чат!");
+
+            await addDoc(collection(db, "rooms", activeChat, "msgs"), { 
+                val: v, 
+                uid: me.uid, 
+                type: type, 
+                time: serverTimestamp() 
+            });
+            
+            if(type === 'text') f.value = "";
+        } catch(e) { alert("Ошибка отправки: " + e.message); }
     };
 
+    // Файлы
     document.getElementById('f-up').onchange = async (e) => {
-        const fd = new FormData(); fd.append('image', e.target.files[0]);
-        const r = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
-        const d = await r.json();
-        sendMsg('img', d.data.url);
+        if(!e.target.files[0]) return;
+        try {
+            const fd = new FormData(); 
+            fd.append('image', e.target.files[0]);
+            const r = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
+            const d = await r.json();
+            if(d.success) sendMsg('img', d.data.url);
+            else alert("Ошибка загрузки картинки!");
+        } catch(e) { alert("Ошибка сервера картинок."); }
     };
 
-    // ГОЛОСОВЫЕ
+    // Голосовые
     window.toggleRecord = async () => {
         const btn = document.getElementById('mic-btn');
-        if(!recorder) {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            recorder = new MediaRecorder(stream);
-            recorder.ondataavailable = e => audioChunks.push(e.data);
-            recorder.onstop = async () => {
-                const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                const reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onloadend = () => sendMsg('voice', reader.result);
-                audioChunks = [];
-            };
-            recorder.start();
-            btn.style.color = "red";
-        } else {
-            recorder.stop();
-            recorder = null;
-            btn.style.color = "var(--accent)";
-        }
+        try {
+            if(!recorder) {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recorder = new MediaRecorder(stream);
+                recorder.ondataavailable = e => audioChunks.push(e.data);
+                recorder.onstop = async () => {
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = () => sendMsg('voice', reader.result);
+                    audioChunks = [];
+                };
+                recorder.start();
+                btn.style.color = "#ff4444"; // Красный микрофон при записи
+            } else {
+                recorder.stop();
+                recorder = null;
+                btn.style.color = "var(--accent)";
+            }
+        } catch(e) { alert("Дайте разрешение на использование микрофона!"); }
     };
 </script>
 </body>
